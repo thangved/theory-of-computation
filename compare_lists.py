@@ -13,7 +13,7 @@ def to_string(tp=()):
     return _str
 
 
-def compare(a=[], b=[]):
+def compare_lists(a=[], b=[]):
     list_a = to_string_list(a)
     list_b = to_string_list(b)
 
@@ -25,4 +25,4 @@ def compare(a=[], b=[]):
     return []
 
 
-print(compare(['110', '0011', '0110'], ['110110', '00', '110']))
+print(compare_lists(['110', '0011', '0110'], ['110110', '00', '110']))
