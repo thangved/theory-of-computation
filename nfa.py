@@ -53,10 +53,3 @@ tf[(2, '1')] = {2}
 tf[(3, '0')] = {4}
 tf[(4, '0')] = {4}
 tf[(4, '1')] = {4}
-
-nfa = NFA(states, alphabet, tf, start_state, accept_state)
-
-text = str(input("Nhap vao chuoi can kiem tra: "))
-
-print("Cac trang thai cua chuoi nam trong tap trang thai ket thuc la: ",
-      nfa.run_with_input_list(text))
