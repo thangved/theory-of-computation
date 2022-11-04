@@ -2,5 +2,6 @@
 
 [Compare Lists](./compare_lists.md)
 
-[Check DNA](./check_dna.md)
+[Check NFA](./check_dna.md)
 
+[NFA](./nfa.md)
