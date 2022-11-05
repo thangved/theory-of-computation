@@ -123,7 +123,7 @@ class GUI:
 
         self.test_button.pack(side=TOP)
         self.test_button.config(
-            text="Kiểm tra", padx=10, pady=10, bg=COLOR_PRIMARY, fg=COLOR_WHITE, command=self.on_test)
+            text="Kiểm tra", padx=10, pady=10, bg=COLOR_PRIMARY, fg=COLOR_WHITE, borderwidth=0, command=self.on_test)
 
     def config_window(self):
         self.window.title('eNFA Program - Dev by Minh Thang & Truc Mai')
