@@ -1,4 +1,4 @@
-from tkinter import Tk, Frame, Label, Button, filedialog, messagebox, Listbox, TOP, CENTER, BOTTOM, LEFT, BOTH
+from tkinter import Tk, Frame, Label, Button, filedialog, messagebox, Listbox, Text, TOP, LEFT, BOTH, END
 
 from nfa import NFA
 
@@ -17,6 +17,8 @@ FORMAT_FILE_MESSAGE = """File văn bản gồm các dòng sau:
         - Ký tự đầu là trạng thái
         - Ký tự thứ 2 là nhãn
         - Các ký tự còn lại là tập các trạng thái khi đọc vào nhãn
+
+Ghi chú: Ký hiệu " thay thế cho epsilon
 """
 
 
@@ -29,6 +31,7 @@ class GUI:
         self.frame = Frame(self.window)
         self.top_frame = Frame(self.frame)
         self.body_frame = Frame(self.frame)
+        self.test_frame = Frame(self.frame)
 
         self.open_file_button = Button(self.top_frame)
 
@@ -38,10 +41,14 @@ class GUI:
         self.start_state = Frame(self.body_frame)
         self.function_list = Frame(self.body_frame)
 
+        self.string_input = Text(self.test_frame)
+        self.test_button = Button(self.test_frame)
+
         self.config_title()
         self.config_frame()
         self.config_open_file_button()
         self.config_list()
+        self.config_test()
 
         self.config_window()
 
@@ -54,6 +61,9 @@ class GUI:
 
         self.body_frame.pack(side=TOP)
         self.body_frame.config(width=600, pady=10, bg=COLOR_WHITE)
+
+        self.test_frame.pack(side=TOP)
+        self.test_frame.config(width=600, pady=10, bg=COLOR_WHITE)
 
     def config_title(self):
         Label(self.frame, text='eNFA Programing', bg=COLOR_PRIMARY,
@@ -104,8 +114,18 @@ class GUI:
         self.function_listbox = Listbox(self.function_list)
         self.function_listbox.pack(side=TOP)
 
+    def config_test(self):
+        Label(self.test_frame, text="Chuỗi cần kiểm tra",
+              width=800).pack(side=TOP)
+
+        self.string_input.pack(side=TOP)
+        self.string_input.config(height=10)
+
+        self.test_button.pack(side=TOP)
+        self.test_button.config(
+            text="Kiểm tra", padx=10, pady=10, bg=COLOR_PRIMARY, fg=COLOR_WHITE, command=self.on_test)
+
     def config_window(self):
-        self.window.resizable(0, 0)
         self.window.title('eNFA Program - Dev by Minh Thang & Truc Mai')
         self.window.geometry('800x600')
         self.window.mainloop()
@@ -113,6 +133,10 @@ class GUI:
     def open_file(self):
         filename = filedialog.askopenfilename(
             title="Chọn file để nhập văn phạm")
+
+        if not filename:
+            return
+
         file_data = open(filename, 'r').read().split('\n')
 
         states = set(file_data[0]).difference(' ')
@@ -143,6 +167,27 @@ class GUI:
     def show_file_format(self):
         messagebox.showinfo(title="Định dạng file",
                             message=FORMAT_FILE_MESSAGE)
+
+    def on_test(self):
+
+        if not self.nfa:
+            return messagebox.showwarning('Không thể thực hiện kiểm tra', 'Vui lòng nhập văn phạm trước khi kiểm tra chuỗi')
+
+        def handle_error(error): return messagebox.showerror('Lỗi', error)
+
+        res = self.nfa.run_with_input_list(
+            self.string_input.get('1.0', END).replace('\n', ''), on_error=handle_error)
+        message = ""
+        show = messagebox.showinfo
+
+        if res:
+            message += "Chuỗi được chấp nhận bởi NFAe"
+        else:
+            message += "Chuỗi không được chấp nhận bởi NFAe"
+            show = messagebox.showwarning
+
+        show(title="Kiểm tra chuỗi", message=message)
+        pass
 
     def update(self):
         self.states_listbox.delete(0, self.states_listbox.size())

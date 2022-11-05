@@ -8,15 +8,15 @@ class NFA:
         self.start_state = start_state
         self.accept_states = accept_states
 
-    def transition_with_input(self, input_value):
+    def transition_with_input(self, current_state, input_value):
         result = set()
-        for item in self.current_state:
+        for item in current_state:
             if (item, input_value) not in self.transition_function.keys():
                 continue
             else:
                 result = result | self.transition_function[(item, input_value)]
 
-        self.current_state = result
+        return result
 
     def in_accept_state(self):
         return self.current_state & self.accept_states
@@ -24,32 +24,64 @@ class NFA:
     def goto_initial_state(self):
         self.current_state = self.start_state
 
-    def run_with_input_list(self, input_list):
+    def run_with_input_list(self, input_list, on_error):
         self.goto_initial_state()
-        print("Trang thai bat dau la: ", self.current_state)
-        print("Chuoi can kiem tra la: ", input_list)
+
+        current_states = set()
+
+        for state in self.current_state:
+            current_states = self.eCLOSURE(state)
 
         for inp in input_list:
             if inp not in self.alphabet:
-                print("Ton tai ky tu khong thuoc bo chu cai")
+                on_error("Ký tự '" + inp + "' không thuộc bộ chữ cái")
                 return
-            else:
-                self.transition_with_input(inp)
+
+            res = set()
+
+            next_states = self.transition_with_input(current_states, inp)
+
+            for state in next_states:
+                res |= self.eCLOSURE(state)
+
+            current_states = res
+
+        self.current_state = current_states
 
         return self.in_accept_state()
 
+    def eCLOSURE(self, state):
+        result = set()
 
-states = {0, 1, 2, 3, 4}
-alphabet = {'0', '1'}
-start_state = {0}
-accept_state = {2, 4}
-tf = dict()
+        stack = []
+        stack.append(state)
 
-tf[(0, '0')] = {0, 3}
-tf[(0, '1')] = {0, 1}
-tf[(1, '1')] = {2}
-tf[(2, '0')] = {2}
-tf[(2, '1')] = {2}
-tf[(3, '0')] = {4}
-tf[(4, '0')] = {4}
-tf[(4, '1')] = {4}
+        while stack:
+            top = stack.pop()
+            if top in result:
+                continue
+
+            result |= {top}
+
+            if (top, '"') in self.transition_function.keys():
+                res = self.transition_function[(top, '"')]
+                for e in res:
+                    stack.append(e)
+
+        return result
+
+
+# states = {0, 1, 2, 3, 4}
+# alphabet = {'0', '1'}
+# start_state = {0}
+# accept_state = {2, 4}
+# tf = dict()
+
+# tf[(0, '0')] = {0, 3}
+# tf[(0, '1')] = {0, 1}
+# tf[(1, '1')] = {2}
+# tf[(2, '0')] = {2}
+# tf[(2, '1')] = {2}
+# tf[(3, '0')] = {4}
+# tf[(4, '0')] = {4}
+# tf[(4, '1')] = {4}
