@@ -1,3 +1,6 @@
+EPSILON = '"'
+
+
 class NFA:
     current_state = None
 
@@ -63,7 +66,7 @@ class NFA:
 
             result |= {top}
 
-            if (top, '"') in self.transition_function.keys():
+            if (top, EPSILON) in self.transition_function.keys():
                 res = self.transition_function[(top, '"')]
                 for e in res:
                     stack.append(e)

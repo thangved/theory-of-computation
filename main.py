@@ -1,6 +1,8 @@
-from tkinter import Tk, Frame, Label, Button, filedialog, messagebox, Listbox, Text, TOP, LEFT, BOTH, END
+from tkinter import *
+from tkinter import messagebox, filedialog
 
-from nfa import NFA
+from classes.nfa import NFA
+from constants import *
 
 COLOR_PRIMARY = '#3d7eff'
 COLOR_SECONDARY = '#ff8b17'
@@ -66,7 +68,7 @@ class GUI:
         self.test_frame.config(width=600, pady=10, bg=COLOR_WHITE)
 
     def config_title(self):
-        Label(self.frame, text='eNFA Programing', bg=COLOR_PRIMARY,
+        Label(self.frame, text='NFAε Programing', bg=COLOR_PRIMARY,
               fg=COLOR_WHITE, pady=10, width=800, font=('Arial', 17)).pack(side=TOP)
 
     def config_open_file_button(self):
@@ -126,7 +128,7 @@ class GUI:
             text="Kiểm tra", padx=10, pady=10, bg=COLOR_PRIMARY, fg=COLOR_WHITE, borderwidth=0, command=self.on_test)
 
     def config_window(self):
-        self.window.title('eNFA Program - Dev by Minh Thang & Truc Mai')
+        self.window.title(WIN_TITLE)
         self.window.geometry('800x600')
         self.window.mainloop()
 
@@ -139,30 +141,34 @@ class GUI:
 
         file_data = open(filename, 'r').read().split('\n')
 
-        states = set(file_data[0]).difference(' ')
-        file_data.pop(0)
+        try:
+            states = set(file_data[0]).difference(' ')
+            file_data.pop(0)
 
-        alphabet = set(file_data[0]).difference(' ')
-        file_data.pop(0)
+            alphabet = set(file_data[0]).difference(' ')
+            file_data.pop(0)
 
-        start_state = set(file_data[0]).difference(' ')
-        file_data.pop(0)
+            start_state = set(file_data[0]).difference(' ')
+            file_data.pop(0)
 
-        accept_states = set(file_data[0]).difference(' ')
-        file_data.pop(0)
+            accept_states = set(file_data[0]).difference(' ')
+            file_data.pop(0)
 
-        tf = dict()
+            tf = dict()
 
-        for func in file_data:
-            func = func.split(' ')
-            state = func[0]
-            label = func[1]
-            func.pop(0)
-            func.pop(0)
-            tf[(state, label)] = set(func)
+            for func in file_data:
+                func = func.split(' ')
+                state = func[0]
+                label = func[1]
+                func.pop(0)
+                func.pop(0)
+                tf[(state, label)] = set(func)
 
-        self.nfa = NFA(states, alphabet, tf, start_state, accept_states)
-        self.update()
+            self.nfa = NFA(states, alphabet, tf, start_state, accept_states)
+            self.update()
+        except:
+            messagebox.showerror(
+                'Lỗi đọc file', 'File của bạn đã mở không đúng định dạng')
 
     def show_file_format(self):
         messagebox.showinfo(title="Định dạng file",
@@ -181,9 +187,9 @@ class GUI:
         show = messagebox.showinfo
 
         if res:
-            message += "Chuỗi được chấp nhận bởi NFAe"
+            message += "Chuỗi được chấp nhận bởi NFAε"
         else:
-            message += "Chuỗi không được chấp nhận bởi NFAe"
+            message += "Chuỗi không được chấp nhận bởi NFAε"
             show = messagebox.showwarning
 
         show(title="Kiểm tra chuỗi", message=message)
