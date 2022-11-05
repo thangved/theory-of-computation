@@ -37,28 +37,44 @@ class GUI:
 
     def config_frame(self):
         self.frame.pack(side=TOP)
-        self.frame.config(width=800, height=600, bg=COLOR_WHITE)
+        self.frame.config(
+            width=WINDOW_INIT_WIDTH,
+            height=WINDOW_INIT_HEIGHT, bg=COLOR_WHITE
+        )
 
         self.top_frame.pack(side=TOP)
-        self.top_frame.config(width=600, pady=10, bg=COLOR_WHITE)
+        self.top_frame.config(
+            width=WINDOW_INIT_HEIGHT,
+            pady=10, bg=COLOR_WHITE
+        )
 
         self.body_frame.pack(side=TOP)
-        self.body_frame.config(width=600, pady=10, bg=COLOR_WHITE)
+        self.body_frame.config(
+            width=WINDOW_INIT_HEIGHT,
+            pady=10, bg=COLOR_WHITE
+        )
 
         self.test_frame.pack(side=TOP)
-        self.test_frame.config(width=600, pady=10, bg=COLOR_WHITE)
+        self.test_frame.config(
+            width=WINDOW_INIT_HEIGHT,
+            pady=10, bg=COLOR_WHITE
+        )
 
     def config_title(self):
-        Label(self.frame, text='NFAε Programing', bg=COLOR_PRIMARY,
-              fg=COLOR_WHITE, pady=10, width=800, font=('Arial', 17)).pack(side=TOP)
+        Label(
+            self.frame, text='NFAε Programing', bg=COLOR_PRIMARY,
+            fg=COLOR_WHITE, pady=10, width=WINDOW_INIT_WIDTH, font=('Arial', 17)
+        ).pack(side=TOP)
 
     def config_open_file_button(self):
         self.open_file_button.pack(side=LEFT, fill=BOTH)
         self.open_file_button.config(
             text="Nhập văn phạm", bg=COLOR_SECONDARY, borderwidth=0, fg=COLOR_WHITE, padx=10, pady=10, command=self.open_file)
 
-        Button(self.top_frame, text="?", padx=10, pady=10,
-               bg=COLOR_BLACK, fg=COLOR_WHITE, borderwidth=0, command=self.show_file_format).pack(side=LEFT)
+        Button(
+            self.top_frame, text="?", padx=10, pady=10,
+            bg=COLOR_BLACK, fg=COLOR_WHITE, borderwidth=0, command=self.show_file_format
+        ).pack(side=LEFT)
 
     def config_list(self):
         self.states_list.pack(side=LEFT)
@@ -67,55 +83,66 @@ class GUI:
         self.accept_states_list.pack(side=LEFT)
         self.function_list.pack(side=LEFT)
 
-        Label(self.states_list, text="Các trạng thái",
-              padx=5, pady=5).pack(side=TOP)
+        Label(
+            self.states_list, text=STATES,
+            padx=5, pady=5
+        ).pack(side=TOP)
 
         self.states_listbox = Listbox(self.states_list)
         self.states_listbox.pack(side=TOP)
 
-        Label(self.alphabet_list, text="Các ký tự",
-              padx=5, pady=5).pack(side=TOP)
+        Label(
+            self.alphabet_list, text=ALPHABETS,
+            padx=5, pady=5
+        ).pack(side=TOP)
 
         self.alphabet_listbox = Listbox(self.alphabet_list)
         self.alphabet_listbox.pack(side=TOP)
 
-        Label(self.accept_states_list, text="Các trạng thái kết thúc",
-              padx=5, pady=5).pack(side=TOP)
+        Label(
+            self.accept_states_list, text=ACCEPT_STATES,
+            padx=5, pady=5
+        ).pack(side=TOP)
 
         self.accept_states_listbox = Listbox(self.accept_states_list)
         self.accept_states_listbox.pack(side=TOP)
 
-        Label(self.start_state, text="Trạng thái bắt đầu",
-              padx=5, pady=5).pack(side=TOP)
+        Label(
+            self.start_state, text=START_STATES,
+            padx=5, pady=5
+        ).pack(side=TOP)
 
         self.start_state_listbox = Listbox(self.start_state)
         self.start_state_listbox.pack(side=TOP)
 
-        Label(self.function_list, text="Hàm chuyển trạng thái",
-              padx=5, pady=5).pack(side=TOP)
+        Label(
+            self.function_list, text=TRANSITION_FUNCTIONS,
+            padx=5, pady=5
+        ).pack(side=TOP)
 
         self.function_listbox = Listbox(self.function_list)
         self.function_listbox.pack(side=TOP)
 
     def config_test(self):
-        Label(self.test_frame, text="Chuỗi cần kiểm tra",
-              width=800).pack(side=TOP)
+        Label(
+            self.test_frame, text=STR_NEED_TEST,
+            width=WINDOW_INIT_WIDTH
+        ).pack(side=TOP)
 
         self.string_input.pack(side=TOP)
         self.string_input.config(height=10)
 
         self.test_button.pack(side=TOP)
         self.test_button.config(
-            text="Kiểm tra", padx=10, pady=10, bg=COLOR_PRIMARY, fg=COLOR_WHITE, borderwidth=0, command=self.on_test)
+            text=CHECK, padx=10, pady=10, bg=COLOR_PRIMARY, fg=COLOR_WHITE, borderwidth=0, command=self.on_test)
 
     def config_window(self):
         self.window.title(WIN_TITLE)
-        self.window.geometry('800x600')
+        self.window.geometry(WINDOW_RESOLUTION)
         self.window.mainloop()
 
     def open_file(self):
-        filename = filedialog.askopenfilename(
-            title="Chọn file để nhập văn phạm")
+        filename = filedialog.askopenfilename(title=SELECT_FILE_TO_IMPORT_FA)
 
         if not filename:
             return
@@ -146,21 +173,19 @@ class GUI:
                 tf[(state, label)] = set(func)
 
             self.nfa = NFA(states, alphabet, tf, start_state, accept_states)
-            self.update()
+            self.update_lists()
         except:
-            messagebox.showerror(
-                'Lỗi đọc file', 'File của bạn đã mở không đúng định dạng')
+            messagebox.showerror(READ_FILE_ERROR, FILE_NOT_MATCH_FORMAT)
 
     def show_file_format(self):
-        messagebox.showinfo(title="Định dạng file",
-                            message=FORMAT_FILE_MESSAGE)
+        messagebox.showinfo(title=FILE_FORMAT, message=FORMAT_FILE_MESSAGE)
 
     def on_test(self):
 
         if not self.nfa:
-            return messagebox.showwarning('Không thể thực hiện kiểm tra', 'Vui lòng nhập văn phạm trước khi kiểm tra chuỗi')
+            return messagebox.showwarning(CANNOT_TEST, PLEASE_IMPORT_FA)
 
-        def handle_error(error): return messagebox.showerror('Lỗi', error)
+        def handle_error(error): return messagebox.showerror(ERROR, error)
 
         res = self.nfa.run_with_input_list(
             self.string_input.get('1.0', END).replace('\n', ''), on_error=handle_error)
@@ -168,40 +193,34 @@ class GUI:
         show = messagebox.showinfo
 
         if res:
-            message += "Chuỗi được chấp nhận bởi NFAε"
+            message += FA_ACCEPTED_STR
         else:
-            message += "Chuỗi không được chấp nhận bởi NFAε"
+            message += FA_NOT_ACCEPT_STR
             show = messagebox.showwarning
 
-        show(title="Kiểm tra chuỗi", message=message)
+        show(title=CHECK_STR, message=message)
         pass
 
-    def update(self):
-        self.states_listbox.delete(0, self.states_listbox.size())
+    def update_lists(self):
 
-        for state in self.nfa.states:
-            self.states_listbox.insert(0, state)
+        def func_to_str(key):
+            return str(key) + " -> " + str(self.nfa.transition_function[key])
 
-        self.alphabet_listbox.delete(0, self.alphabet_listbox.size())
+        self.update_list(self.nfa.states, self.states_listbox)
+        self.update_list(self.nfa.alphabet, self.alphabet_listbox)
+        self.update_list(self.nfa.accept_states, self.accept_states_listbox)
+        self.update_list(self.nfa.start_state, self.start_state_listbox)
+        self.update_list(self.nfa.transition_function, self.function_listbox)
+        self.update_list(
+            self.nfa.transition_function.keys(),
+            self.function_listbox, func_to_str
+        )
 
-        for alp in self.nfa.alphabet:
-            self.alphabet_listbox.insert(0, alp)
+    def update_list(self, data, listbox, get_data=lambda item: item):
+        listbox.delete(0, listbox.size())
 
-        self.accept_states_listbox.delete(0, self.accept_states_listbox.size())
-
-        for state in self.nfa.accept_states:
-            self.accept_states_listbox.insert(0, state)
-
-        self.start_state_listbox.delete(0, self.start_state_listbox.size())
-
-        for state in self.nfa.start_state:
-            self.start_state_listbox.insert(0, state)
-
-        self.function_listbox.delete(0, self.function_listbox.size())
-
-        for key in self.nfa.transition_function.keys():
-            self.function_listbox.insert(
-                0, str(key) + " -> " + str(self.nfa.transition_function[key]))
+        for item in data:
+            listbox.insert(0, get_data(item))
 
 
 if __name__ == "__main__":
