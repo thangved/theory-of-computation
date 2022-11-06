@@ -4,14 +4,14 @@ EPSILON = '"'
 class NFA:
     current_state = None
 
-    def __init__(self, states, alphabet, transition_function, start_state, accept_states):
+    def __init__(self, states: set, alphabet: set, transition_function: dict, start_state, accept_states: set):
         self.states = states
         self.alphabet = alphabet
         self.transition_function = transition_function
         self.start_state = start_state
         self.accept_states = accept_states
 
-    def transition_with_input(self, current_state, input_value):
+    def transition_with_input(self, current_state: set, input_value):
         result = set()
         for item in current_state:
             if (item, input_value) not in self.transition_function.keys():
@@ -27,7 +27,7 @@ class NFA:
     def goto_initial_state(self):
         self.current_state = self.start_state
 
-    def run_with_input_list(self, input_list, on_error):
+    def run_with_input_list(self, input_list: str, on_error: lambda e: None):
         self.goto_initial_state()
 
         current_states = set()

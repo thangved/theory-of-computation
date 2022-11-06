@@ -8,7 +8,7 @@ from constants import *
 class GUI:
     nfa = None
 
-    def __init__(self) -> None:
+    def __init__(self):
         self.window = Tk()
 
         self.frame = Frame(self.window)
@@ -216,7 +216,7 @@ class GUI:
             self.function_listbox, func_to_str
         )
 
-    def update_list(self, data, listbox, get_data=lambda item: item):
+    def update_list(self, data: list, listbox: Listbox, get_data=lambda item: item):
         listbox.delete(0, listbox.size())
 
         for item in data:
